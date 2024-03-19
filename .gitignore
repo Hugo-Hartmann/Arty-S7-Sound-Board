@@ -4,6 +4,7 @@
 # Base
 !.gitignore
 !README.md
+!CHANGELOG.md
 
 # Constraints
 !Constraints/
