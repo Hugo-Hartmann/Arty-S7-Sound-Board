@@ -13,22 +13,22 @@ use UNISIM.vcomponents.all;
 entity DAC_CS4344 is
     port(
         -- Clk and reset
-        clk         : in  std_logic;                                -- Used as MCLK
-        rst_n       : in  std_logic;                                -- Async
+        clk                 : in  std_logic;                                -- Used as MCLK
+        rst_n               : in  std_logic;                                -- Async
 
         -- Config
         i_mclk_lrck_ratio   : in  std_logic_vector(10 downto 0);    -- min 64, max 1152
         i_mclk_sclk_ratio   : in  std_logic_vector(5 downto 0);     -- min 2, max 32
 
         -- Data interface (One way control since DAC cannot be paused)
-        i_data_in       : in  std_logic_vector(47 downto 0);        -- Left Channel = 24 LSB, Right Channel = 24 MSB
-        o_data_ready    : out std_logic;                            -- Ready signal to indicate input data has been consummed
+        i_data_in           : in  std_logic_vector(47 downto 0);        -- Left Channel = 24 LSB, Right Channel = 24 MSB
+        o_data_ready        : out std_logic;                            -- Ready signal to indicate input data has been consummed
 
         -- I2S interface
-        o_mclk      : out std_logic;
-        o_sclk      : out std_logic;
-        o_lrck      : out std_logic;
-        o_data      : out std_logic
+        o_mclk              : out std_logic;
+        o_sclk              : out std_logic;
+        o_lrck              : out std_logic;
+        o_data              : out std_logic
         );
 end DAC_CS4344;
 
@@ -207,8 +207,8 @@ begin
        Q    => o_data,
        C    => clk,
        CE   => '1',
-       D1   => s_data_shift_reg(24),
-       D2   => s_data_shift_reg(24),
+       D1   => s_data_shift_reg(23),
+       D2   => s_data_shift_reg(23),
        R    => '0',
        S    => '0'
     );
