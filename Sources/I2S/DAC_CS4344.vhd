@@ -21,7 +21,7 @@ entity DAC_CS4344 is
         i_mclk_sclk_ratio   : in  std_logic_vector(5 downto 0);     -- min 2, max 32
 
         -- Data interface (One way control since DAC cannot be paused)
-        i_data_in           : in  std_logic_vector(47 downto 0);        -- Left Channel = 24 LSB, Right Channel = 24 MSB
+        i_data_in           : in  std_logic_vector(47 downto 0);        -- Right Channel = 24 LSB, Left Channel = 24 MSB
         o_data_ready        : out std_logic;                            -- Ready signal to indicate input data has been consummed
 
         -- I2S interface
@@ -141,12 +141,12 @@ begin
         if(rst_n = '0') then
             s_data_shift_reg    <= (others => '0');
         elsif(rising_edge(clk)) then
-            -- Load new data LSB (left channel) and last bit of previous data (right channel)
+            -- Load new data MSB (left channel) and last bit of previous data (right channel LSB)
             if(s_lrck_f_edge = '1') then
-                s_data_shift_reg    <= s_data_in_d(24) & i_data_in(23 downto 1);
-            -- Load registered data MSB (right channel) and last bit of previous data (left channel)
+                s_data_shift_reg    <= s_data_in_d(0) & i_data_in(47 downto 25);
+            -- Load registered data LSB (right channel) and last bit of previous data (left channel LSB)
             elsif(s_lrck_r_edge = '1') then
-                s_data_shift_reg    <= s_data_in_d(0) & s_data_in_d(47 downto 25);
+                s_data_shift_reg    <= s_data_in_d(24) & s_data_in_d(23 downto 1);
             -- Shift by 1 bit
             elsif(s_sclk_f_edge = '1') then
                 s_data_shift_reg    <= s_data_shift_reg(22 downto 0) & '0';
