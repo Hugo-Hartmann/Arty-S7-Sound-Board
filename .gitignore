@@ -9,3 +9,12 @@
 # Constraints
 !Constraints/
 !Constraints/*.xdc
+
+# Datasheet
+!Datasheet/
+!Datasheet/*.pdf
+
+# Sources
+!Sources/
+!Sources/*/
+!Sources/**/*.vhd
