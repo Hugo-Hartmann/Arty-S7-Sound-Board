@@ -18,3 +18,7 @@
 !Sources/
 !Sources/*/
 !Sources/**/*.vhd
+
+# Bench
+!Bench/
+!Bench/*.vhd
