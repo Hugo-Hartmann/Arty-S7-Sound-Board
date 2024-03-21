@@ -1,6 +1,16 @@
 -------------------------------------------------------------------------------
 -- Title      : DAC_CS4344
 -- Project    : Arty-S7-Sound-Board
+
+-- Compatible modes (24-bit, not exhaustive) :
+-- MCLK/LRCK | SCLK/LRCK | MCLK/SCLK
+
+-- 96        | 48        | 2
+-- 192       | 48        | 4
+-- 384       | 48        | 8
+-- 768       | 48        | 16
+-- 1152      | 72        | 16
+
 -------------------------------------------------------------------------------
 
 library IEEE;
@@ -55,7 +65,7 @@ architecture RTL of DAC_CS4344 is
     signal s_data_in_d      : std_logic_vector(47 downto 0);
 
     -- Data management
-    signal s_data_shift_reg : std_logic_vector(23 downto 0);
+    signal s_data_shift_reg : std_logic_vector(24 downto 0);
 
 begin
 
@@ -143,13 +153,13 @@ begin
         elsif(rising_edge(clk)) then
             -- Load new data MSB (left channel) and last bit of previous data (right channel LSB)
             if(s_lrck_f_edge = '1') then
-                s_data_shift_reg    <= s_data_in_d(0) & i_data_in(47 downto 25);
+                s_data_shift_reg    <= s_data_in_d(0) & i_data_in(47 downto 24);
             -- Load registered data LSB (right channel) and last bit of previous data (left channel LSB)
             elsif(s_lrck_r_edge = '1') then
-                s_data_shift_reg    <= s_data_in_d(24) & s_data_in_d(23 downto 1);
+                s_data_shift_reg    <= s_data_in_d(24) & s_data_in_d(23 downto 0);
             -- Shift by 1 bit
             elsif(s_sclk_f_edge = '1') then
-                s_data_shift_reg    <= s_data_shift_reg(22 downto 0) & '0';
+                s_data_shift_reg    <= s_data_shift_reg(23 downto 0) & '0';
             end if;
         end if;
     end process;
@@ -207,8 +217,8 @@ begin
        Q    => o_data,
        C    => clk,
        CE   => '1',
-       D1   => s_data_shift_reg(23),
-       D2   => s_data_shift_reg(23),
+       D1   => s_data_shift_reg(24),
+       D2   => s_data_shift_reg(24),
        R    => '0',
        S    => '0'
     );
